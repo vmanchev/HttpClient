@@ -178,6 +178,37 @@ class Client
     }
 
     /**
+     * Enable SSL connection
+     * 
+     * To enable the SSL connection, provide the full path to the certificate on 
+     * your server. For more information:
+     * 
+     * 1) How to convert a CA to pem file:
+     * http://nl3.php.net/manual/en/function.curl-setopt.php#110457
+     * 
+     * 2) How to get the certificate and set up everyhing:
+     * http://unitstep.net/blog/2009/05/05/using-curl-in-php-to-access-https-ssltls-protected-sites/
+     * 
+     * @param type $cert_path
+     */
+    public function enableSsl($cert_path){
+       curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 1);
+       curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, 2);
+       curl_setopt($this->ch, CURLOPT_SSLVERSION, 3);
+       curl_setopt($this->ch, CURLOPT_CAINFO, $cert_path);
+    }
+    
+    /**
+     * Disable SSL support
+     * 
+     * @return \Prodio\Http\Client
+     */
+    public function disableSsl(){
+       curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
+       return $this;
+    }
+
+    /**
      * Set default options
      * 
      * @todo Create setters and getters or options
