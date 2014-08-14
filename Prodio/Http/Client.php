@@ -93,6 +93,11 @@ class Client
      */
     public function send()
     {
+        if($this->method == 'GET'){
+            $url = $this->url . '?' . $this->__buildQuery();
+            $this->setUrl($url);
+        }
+        
         $result = curl_exec($this->ch);
 
         if ($result === false) {
@@ -132,7 +137,9 @@ class Client
     {
         $this->params = $params;
 
-        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->__buildQuery());
+        if($this->method == 'POST'){
+            curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->__buildQuery());
+        }
 
         return $this;
     }
@@ -164,13 +171,13 @@ class Client
 
         switch ($this->method) {
             case 'POST':
-                curl_setopt($this->ch, CURLOPT_POST, 1);
+                curl_setopt($this->ch, CURLOPT_POST, true);
                 break;
             case 'GET':
-                curl_setopt($this->ch, CURLOPT_HTTPGET, 1);
+                curl_setopt($this->ch, CURLOPT_HTTPGET, true);
                 break;
             default:
-                curl_setopt($this->ch, CURLOPT_HTTPGET, 1);
+                curl_setopt($this->ch, CURLOPT_HTTPGET, true);
                 break;
         }
 
@@ -196,6 +203,7 @@ class Client
        curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, 2);
        curl_setopt($this->ch, CURLOPT_SSLVERSION, 3);
        curl_setopt($this->ch, CURLOPT_CAINFO, $cert_path);
+       return $this;
     }
     
     /**
@@ -207,7 +215,7 @@ class Client
        curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
        return $this;
     }
-
+    
     /**
      * Set default options
      * 
@@ -249,3 +257,4 @@ class Client
     }
 
 }
+
