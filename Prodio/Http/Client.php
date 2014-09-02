@@ -109,6 +109,28 @@ class Client
         return $result;
     }
 
+    /**
+     * Send asynchronous HTTP request
+     * 
+     * "Try to send" asynchronous HTTP request, by limiting the timeout/max execution time. In other words, send 
+     * the request and do not wait for response. 
+     * 
+     * @return boolean
+     * @throws CurlException
+     */
+    public function sendAsync()
+    {
+        $this->__setAsyncOptions();
+        $result = curl_exec($this->ch);
+        
+        if ($result === false) {
+            throw new CurlException($this->ch);
+        }        
+        
+        curl_close($this->ch);
+        return true;
+    }    
+
     public function getUrl()
     {
         return $this->url;
@@ -229,7 +251,21 @@ class Client
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, array("Accept: gzip,deflate"));
         curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($this->ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($this->ch, CURLOPT_FRESH_CONNECT, 1);
 
+        return $this;
+    }
+
+    /**
+     * Set asynchronous options 
+     * 
+     * There are some examples on the Internet, which are using CURL_TIMEOUT_MS, but if the value is less 
+     * then a few seconds, a timeout error will be thrown.
+     * @return \Prodio\Http\Client
+     */
+    private function __setAsyncOptions()
+    {
+        curl_setopt($this->ch, CURLOPT_TIMEOUT, 5);
         return $this;
     }
 
@@ -257,4 +293,3 @@ class Client
     }
 
 }
-
