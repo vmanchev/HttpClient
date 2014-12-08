@@ -1,11 +1,11 @@
 <?php
 /**
  * HTTP client
- * 
+ *
  * cUrl wrapper as client for HTTP queries. Useful when consuming RESTful web 
  * services. Still a lot to be done, but at present time - fully working as per 
  * my current needs.
- * 
+ *
  * @categoty Prodio
  * @package  Http
  * @version  0.0.1
@@ -18,28 +18,28 @@ use Prodio\Http\Exception\Curl as CurlException;
 
 /**
  * HTTP client
- * 
- * Usage: 
- * 
+ *
+ * Usage:
+ *
  * <code>
  * <?php
- * 
+ *
  * use Prodio\Http\Client as HttpClient;
  * use Prodio\Http\Exception\Curl as CurlException;
- * 
+ *
  * $HttpClient->setMethod('POST')
  *      ->setUrl('http://example.org/end-point')
  *      ->setParams(array(
  *          'param1' => 'value1',
  *          'param2' => 'value2'
  *      ));
- * 
+ *
  * try {
  *      $response = $HttpClient->send();
  * } catch(CurlException $ex) {
  *      echo $ex->getMessage();
  * }
- * 
+ *
  * </code>
  */
 class Client
@@ -48,25 +48,25 @@ class Client
      * cUrl handle
      */
     protected $ch;
-    
+
     /**
      * Service URL to send the requests to
      * @var string
      */
     protected $url;
-    
+
     /**
      * Request params
      * @var mixed Could be one of array, object or key/value query string. 
      */
     protected $params;
-    
+
     /**
      * HTTP method
      * @var string HTTP method to be used for this request (GET or POST).
      */
     protected $method;
-    
+
     /**
      * Request headers
      * @var array Array of headers to be used for this request
@@ -87,7 +87,7 @@ class Client
 
     /**
      * Send the HTTP request
-     * 
+     *
      * @return mixed Request result (string) or false.
      * @throws Prodio\Http\Exception\Curl
      */
@@ -97,7 +97,7 @@ class Client
             $url = $this->url . '?' . $this->__buildQuery();
             $this->setUrl($url);
         }
-        
+
         $result = curl_exec($this->ch);
 
         if ($result === false) {
@@ -111,10 +111,10 @@ class Client
 
     /**
      * Send asynchronous HTTP request
-     * 
-     * "Try to send" asynchronous HTTP request, by limiting the timeout/max execution time. In other words, send 
-     * the request and do not wait for response. 
-     * 
+     *
+     * "Try to send" asynchronous HTTP request, by limiting the timeout/max execution time. In other words, send
+     * the request and do not wait for response.
+     *
      * @return boolean
      * @throws CurlException
      */
@@ -122,14 +122,14 @@ class Client
     {
         $this->__setAsyncOptions();
         $result = curl_exec($this->ch);
-        
+
         if ($result === false) {
             throw new CurlException($this->ch);
-        }        
-        
+        }
+
         curl_close($this->ch);
         return true;
-    }    
+    }
 
     public function getUrl()
     {
@@ -198,6 +198,12 @@ class Client
             case 'GET':
                 curl_setopt($this->ch, CURLOPT_HTTPGET, true);
                 break;
+            case 'DELETE':
+                curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                break;
+            case 'PUT':
+                curl_setopt($this->ch, CURLOPT_PUT, true);
+                break;
             default:
                 curl_setopt($this->ch, CURLOPT_HTTPGET, true);
                 break;
@@ -208,16 +214,16 @@ class Client
 
     /**
      * Enable SSL connection
-     * 
-     * To enable the SSL connection, provide the full path to the certificate on 
+     *
+     * To enable the SSL connection, provide the full path to the certificate on
      * your server. For more information:
-     * 
+     *
      * 1) How to convert a CA to pem file:
      * http://nl3.php.net/manual/en/function.curl-setopt.php#110457
-     * 
+     *
      * 2) How to get the certificate and set up everyhing:
      * http://unitstep.net/blog/2009/05/05/using-curl-in-php-to-access-https-ssltls-protected-sites/
-     * 
+     *
      * @param type $cert_path
      */
     public function enableSsl($cert_path){
@@ -227,20 +233,20 @@ class Client
        curl_setopt($this->ch, CURLOPT_CAINFO, $cert_path);
        return $this;
     }
-    
+
     /**
      * Disable SSL support
-     * 
+     *
      * @return \Prodio\Http\Client
      */
     public function disableSsl(){
        curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 0);
        return $this;
     }
-    
+
     /**
      * Set default options
-     * 
+     *
      * @todo Create setters and getters or options
      * @todo Headers management
      */
@@ -257,9 +263,9 @@ class Client
     }
 
     /**
-     * Set asynchronous options 
+     * Set asynchronous options
      * 
-     * There are some examples on the Internet, which are using CURL_TIMEOUT_MS, but if the value is less 
+     * There are some examples on the Internet, which are using CURL_TIMEOUT_MS, but if the value is less
      * then a few seconds, a timeout error will be thrown.
      * @return \Prodio\Http\Client
      */
@@ -271,11 +277,11 @@ class Client
 
     /**
      * Builds the query string
-     * 
-     * Builds an HTTP query string out of the Client::params property. If params 
-     * property holds an array, it could be one-dimensional or multi-dimensional. 
-     * If params property holds an object, only its public properties will be used. 
-     * 
+     *
+     * Builds an HTTP query string out of the Client::params property. If params
+     * property holds an array, it could be one-dimensional or multi-dimensional.
+     * If params property holds an object, only its public properties will be used.
+     *
      * @return string Key/value pairs, e.g. param1=value1&param2=value2
      */
     private function __buildQuery()
