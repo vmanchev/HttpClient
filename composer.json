@@ -1,0 +1,15 @@
+{
+    "name": "ProdioHttpClient",
+    "description": "Prodio HTTP Client",
+    "authors": [
+        {
+            "name": "Venelin Manchev",
+            "email": "manchev@prodio.bg"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Prodio\HttpClient": "lib/"
+        }
+    }
+}
