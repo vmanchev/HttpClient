@@ -9,7 +9,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "Prodio\HttpClient": "lib/"
+            "ProdioHttpClient": "lib/"
         }
     }
 }
