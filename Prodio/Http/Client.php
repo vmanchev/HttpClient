@@ -245,6 +245,19 @@ class Client
     }
 
     /**
+     * Set up HTTP Authentication 
+     * 
+     * @param string $username
+     * @param string $password
+     * @return \Prodio\Http\Client
+     */
+    public function setHttpAuth($username, $password)
+    {
+        curl_setopt($this->ch, CURLOPT_USERPWD, $username . ":" . $password);
+        return $this;
+    }
+
+    /**
      * Set default options
      *
      * @todo Create setters and getters or options
