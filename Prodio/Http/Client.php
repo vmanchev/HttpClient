@@ -2,8 +2,8 @@
 /**
  * HTTP client
  *
- * cUrl wrapper as client for HTTP queries. Useful when consuming RESTful web 
- * services. Still a lot to be done, but at present time - fully working as per 
+ * cUrl wrapper as client for HTTP queries. Useful when consuming RESTful web
+ * services. Still a lot to be done, but at present time - fully working as per
  * my current needs.
  *
  * @categoty Prodio
@@ -57,7 +57,7 @@ class Client
 
     /**
      * Request params
-     * @var mixed Could be one of array, object or key/value query string. 
+     * @var mixed Could be one of array, object or key/value query string.
      */
     protected $params;
 
@@ -74,9 +74,15 @@ class Client
     protected $headers = array();
 
     /**
+     * In debug more, we can access the response headers
+     * @var string
+     */
+    protected $responseHeaders;
+
+    /**
      * Class constructor
-     * 
-     * Initialize cUrl and set the default values. 
+     *
+     * Initialize cUrl and set the default values.
      */
     public function __construct()
     {
@@ -103,6 +109,8 @@ class Client
         if ($result === false) {
             throw new CurlException($this->ch);
         }
+
+        $this->responseHeaders = curl_getinfo($this->ch, CURLINFO_HEADER_OUT);
 
         curl_close($this->ch);
 
@@ -144,6 +152,11 @@ class Client
     public function getMethod()
     {
         return $this->method;
+    }
+
+    public function getResponseHeaders()
+    {
+        return $this->responseHeaders;
     }
 
     public function setUrl($url)
@@ -229,7 +242,7 @@ class Client
     public function enableSsl($cert_path){
        curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, 1);
        curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, 2);
-       curl_setopt($this->ch, CURLOPT_SSLVERSION, 3);
+       curl_setopt($this->ch, CURLOPT_SSLVERSION, 0);
        curl_setopt($this->ch, CURLOPT_CAINFO, $cert_path);
        return $this;
     }
@@ -253,6 +266,7 @@ class Client
      */
     public function setHttpAuth($username, $password)
     {
+        curl_setopt($this->ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($this->ch, CURLOPT_USERPWD, $username . ":" . $password);
         return $this;
     }
@@ -275,9 +289,25 @@ class Client
         return $this;
     }
 
+    public function enableDebug()
+    {
+        curl_setopt($this->ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($this->ch, CURLINFO_HEADER_OUT, 1);
+
+        return $this;
+    }
+
+    public function disableDebug()
+    {
+        curl_setopt($this->ch, CURLOPT_VERBOSE, 0);
+        curl_setopt($this->ch, CURLINFO_HEADER_OUT, 0);
+
+        return $this;
+    }
+
     /**
      * Set asynchronous options
-     * 
+     *
      * There are some examples on the Internet, which are using CURL_TIMEOUT_MS, but if the value is less
      * then a few seconds, a timeout error will be thrown.
      * @return \Prodio\Http\Client
@@ -312,3 +342,5 @@ class Client
     }
 
 }
+
+
