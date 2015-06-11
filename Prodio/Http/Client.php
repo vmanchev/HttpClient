@@ -249,8 +249,8 @@ class Client
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($this->ch, CURLOPT_ENCODING, '');
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, array("Accept: gzip,deflate"));
-        curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($this->ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 310);
+        curl_setopt($this->ch, CURLOPT_TIMEOUT, 310);
         curl_setopt($this->ch, CURLOPT_FRESH_CONNECT, 1);
 
         return $this;
