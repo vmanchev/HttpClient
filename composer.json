@@ -1,6 +1,7 @@
 {
     "name": "ProdioHttpClient",
     "description": "Prodio HTTP Client",
+    "version": "dev-master",
     "authors": [
         {
             "name": "Venelin Manchev",
