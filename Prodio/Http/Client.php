@@ -131,10 +131,6 @@ class Client
         $this->__setAsyncOptions();
         $result = curl_exec($this->ch);
 
-        if ($result === false) {
-            throw new CurlException($this->ch);
-        }
-
         curl_close($this->ch);
         return true;
     }
